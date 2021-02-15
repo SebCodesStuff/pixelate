@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ColorPicker } from '../ColorPicker';
 import * as copy from 'copy-to-clipboard';
+import axios from 'axios';
 import '../App.css';
+
+axios.defaults.baseURL = 'http://localhost:3001/';
+axios.defaults.headers.get['Content-Type'] ='application/json;charset=utf-8';
+axios.defaults.headers.get['Access-Control-Allow-Origin'] = '*';
 
 function Build() {
     const [width, setWidth] = useState(10);
@@ -9,6 +14,7 @@ function Build() {
     const [color, setColor] = useState();
     const [cells, setCells] = useState([]);
     const [reset, setReset] = useState(false); 
+    const [panelOpen, setPanelOpen] = useState(true);
   
     const Inputs = ({text, defaultVal, onSubmit}) => {
       const [value, setValue] = useState(defaultVal);
@@ -21,11 +27,6 @@ function Build() {
           <button onClick={() => onSubmit(value)}>Submit</button>
         </>
       );
-    };
-  
-    const HtmlCell = ({ color }) => {
-      const [backgroundColor, setBackgroundColor] = useState('white');
-      return <div className='cell' onMouseOver={() => setBackgroundColor(color)} style={{ backgroundColor }}></div>
     };
     
     const Cell = ({backgroundColor, i}) => {
@@ -45,13 +46,12 @@ function Build() {
   
   
   
-    const Canvas = ({ htmlCanvas }) => {
+    const Canvas = ({ cells, width }) => {
       const wrapperWidth = (width * 12);
       if (cells && cells.length < 1) return null;
         return (
         <div className='wrapper' style={{ width: wrapperWidth}}>
           {cells.map((color, i) => {
-            if (htmlCanvas) return <HtmlCell color={color} />
             return <Cell backgroundColor={color} i={i} />
           })}
         </div>
@@ -70,19 +70,27 @@ function Build() {
     const generateHTML = () => {
       copy(cells)
     }
+
+    // axios.get('/canvas').then(res => console.log(res));
   
     return (
-        <>
-            <h1>Welcome to Pixelate</h1>
+        <div className='container'>
+          {panelOpen && <div className='side-panel center-column'>
             <Inputs text='How many pixels in wide' onSubmit={int => setWidth(parseInt(int))} defaultVal={width} />
             <Inputs text='How many pixels in height' onSubmit={int => setHeight(parseInt(int))} defaultVal={height} />
+            {/* <button onSubmit={int => testGet()} >Test</button> */}
             <ColorPicker onChange={color => setColor(color)} />
             <button onClick={() => setReset(true)}>Clear colors</button>
-            <Canvas />
             <button onClick={() => generateHTML()}>Generate HTML</button>
             {/* Look at just copying to clipboard instead */}
             <p>Check the Console Logs for your array</p>
-        </>
+          </div>}
+          <div className='center-column main'>
+            <h1>Welcome to Pixelate</h1>
+            <button onClick={() => setPanelOpen(!panelOpen)}>Toggle Side Panel</button>
+            <Canvas cells={cells} width={width} />
+          </div>
+        </div>
     );
 }
 

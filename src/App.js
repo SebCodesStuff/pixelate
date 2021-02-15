@@ -16,14 +16,8 @@ function App() {
       <div className="App">
         <header className="App-header">
             <nav>
-              <ul>
-                <li>
-                  <Link to="/">Build</Link>
-                </li>
-                <li>
-                  <Link to="/view">View</Link>
-                </li>
-              </ul>
+              <Link className='links' to="/">Build</Link>
+              <Link className='links' to="/view">View</Link>
             </nav>
           <Switch>
             <Route path="/view">
