@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { sonic } from '../sonic';
 import '../App.css';
 
 const Inputs = ({text, defaultVal, onSubmit}) => {
@@ -31,10 +32,11 @@ const Canvas = ({ cells, width }) => {
   );
 };
 
+
 function View() {
-    const [width, setWidth] = useState(10);
-    const [height, setHeight] = useState(10);
-    const [cells, setCells] = useState([]);
+    const [width, setWidth] = useState(23);
+    const [height, setHeight] = useState(26);
+    const [cells, setCells] = useState(sonic);
     const [panelOpen, setPanelOpen] = useState(true); 
 
     return (
